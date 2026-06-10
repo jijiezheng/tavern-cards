@@ -84,7 +84,9 @@
 1. 评估影响范围：新需求会影响哪些已完成的条目
 2. 更新 `创作规划.yaml`（characters、entries、mvu 等相关段落）
 3. 同步修改受影响的已完成条目，修改后按上方"用户反馈"流程处理
-4. 如涉及 MVU 结构变更，检查 schema.ts 是否需要调整，以及 initvar.yaml、变量更新规则.yaml 是否需要同步
+4. 如涉及 MVU 结构变更，按 `references/mvu/guide.md#修改流程` 执行变更传播和校验。
+   - 更新 EJS 预处理条目（如有 EJS 引用该变量）
+   - 运行同步检查命令校验 Zod.txt 与 schema.ts 一致
 
 ---
 

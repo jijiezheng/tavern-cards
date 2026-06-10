@@ -15,9 +15,16 @@
 ### 打包前检查清单
 
 - [ ] 所有条目已注册到 entryManifest
-- [ ] MVU 一致性检查通过（如使用 MVU）
-- [ ] `validate-mvu` 校验通过（如使用 MVU）
 - [ ] 无遗留的 `# 待细化` 注释
+
+如果使用 MVU，还需要检查：
+
+- [ ] MVU 一致性检查通过
+- [ ] `validate-mvu` 校验通过
+- [ ] schema.ts 与 Zod.txt 同步（运行 `diff` 同步检查命令确认，见 `references/mvu/guide.md#同步检查命令`）
+- [ ] MVU 脚本已注册：`node scripts/tavern-cards-forge.mjs query {project} '$.extensions.tavern_helper.scripts.MVU'` 返回非空
+- [ ] MVU Zod 脚本已注册：同上，查询路径改为 `$.extensions.tavern_helper.scripts.Zod`
+- [ ] MVU 相关正则已注册：查询 `$.regex_scripts.*~` 应包含 `对AI隐藏状态栏`、`状态栏界面`、`对AI隐藏变量更新`、`变量更新中美化`、`变量更新美化` 五条
 
 ## 状态栏前端开发
 
@@ -30,6 +37,8 @@
 ### 开发流程
 
 #### 1. 准备开发环境
+
+先询问用户是否已克隆过 tavern_helper_template 仓库。如已有，确认仓库位置后直接使用；如没有，执行以下步骤：
 
 ```bash
 # 克隆模板仓库

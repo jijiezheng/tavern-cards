@@ -135,7 +135,7 @@ wc -m 源材料.txt
    - 确保所有 `quotes[].chapter` / `important_chapters[].chapter` 与 `chapters[].name` 完全一致
 
 4. **最终验证**：
-   - 整理深化完成后运行 `node tavern-cards/scripts/validate-conversion-outline.mjs 故事大纲.yaml 源文件.txt`
+   - 整理深化完成后运行 `node scripts/validate-conversion-outline.mjs 故事大纲.yaml 源文件.txt`
    - 脚本通过后，主代理再语义复核引用是否对应正确角色、正确章节，并且真的支撑 `context` 描述
    - 不通过时修正大纲后重新验证
 
@@ -180,6 +180,15 @@ important_chapters:
       - context: ...
         function: ...
         text: ...
+
+# 关键信息确认结果（整理深化后、生成条目规划前，由关键信息确认阶段补充）
+confirmed_info:
+  地名类:
+    - 问题: "..."
+      答案: "..."
+  角色名类:
+    - 问题: "..."
+      答案: "..."
 
 # 整理深化阶段补充
 summary: |

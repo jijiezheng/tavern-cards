@@ -60,7 +60,7 @@ MVU 条目名称使用前缀标记功能定位和双 AI 发送路由，详见 `r
 
 ### 1. 复制模板文件
 
-将 `assets/mvu-templates/` 整体复制到项目目录（路径一一对应，无需重命名）。
+将 `assets/mvu-templates/` 整体复制到项目目录（路径一一对应，无需重命名）。复制后的项目模板默认视为固定资产；模板作用、允许修改的范围和例外流程见 `references/mvu/templates.md`（按需查阅）。
 
 然后将 `schema.ts` 的内容内联到 `脚本/Zod.txt`，替换 `// SCHEMA_CONTENT` 占位行：
 
@@ -142,3 +142,49 @@ MVU 和 EJS 编写完成后，检查 MVU 变量系统与已编写世界书条目
 - EJS预处理 的变量映射是否完整覆盖所有 EJS 条目（包括 `ejs.generate_before` 定义的映射和 `ejs.entries` 条件中使用的变量）
 - 对照 schema.ts，确认每个 EJS 条件使用的变量都在 schema 中有定义
 - 未定义的变量需要返回 MVU 流程补全 schema.ts 和 EJS预处理
+
+## 修改流程
+
+当需要修改已创建的 MVU 变量时（新增、修改变量名、删除或修改类型/范围/初始值等），按以下步骤执行。
+
+### 变更传播矩阵
+
+修改 schema.ts 中的变量定义时，必须同步更新所有受影响文件：
+
+| 变更类型 | schema.ts | initvar.yaml | 更新规则.yaml | Zod.txt | 创作规划.yaml | EJS预处理 | 世界书条目 |
+|---------|-----------|-------------|-------------|---------|--------------|----------|-----------|
+| 新增变量 | ✓ | 添加初始值 | 非自明则添加 | 需重新内联 | 按需更新 | 如有EJS则注册 | enum值需对应描述条目 |
+| 修改变量名 | ✓ | 同步改名 | 同步改名 | 需重新内联 | 同步改名 | 如有EJS则改名 | — |
+| 删除变量 | ✓ | 删除对应值 | 删除对应规则 | 需重新内联 | 删除对应段 | 如有EJS则删除 | — |
+| 修改类型 | ✓ | 需通过校验 | 同步 type | 需重新内联 | — | — | enum值需补充描述 |
+| 修改范围/格式 | ✓ | — | 同步 range/format | 需重新内联 | — | — | — |
+| 修改初始值 | — | 修改对应值 | — | — | — | — | — |
+
+> Zod.txt 需重新内联：修改 schema.ts 后，从资产模板重新生成 `脚本/Zod.txt`：
+> ```bash
+> sed -e '/\/\/ SCHEMA_CONTENT/{r schema.ts' -e 'd}' -e '/^export type/d' {skill_dir}/assets/mvu-templates/脚本/Zod.txt > 脚本/Zod.txt
+> ```
+>
+> `{skill_dir}` 为 tavern-cards skill 的安装路径，需替换为实际路径。
+
+### 同步检查命令
+
+内联完成后，可用以下命令检查 schema.ts 与 Zod.txt 是否同步：
+
+```bash
+diff <(sed -e '/\/\/ SCHEMA_CONTENT/{r schema.ts' -e 'd}' -e '/^export type/d' {skill_dir}/assets/mvu-templates/脚本/Zod.txt) 脚本/Zod.txt && echo '✓ 同步' || echo '✗ 未同步'
+```
+
+原理：从干净模板重新注入当前的 schema.ts 得到期望内容，与实际 Zod.txt 逐行比较。无差异即同步。此命令在项目目录下执行。`{skill_dir}` 为 tavern-cards skill 的安装路径，需替换为实际路径。
+
+### 执行步骤
+
+1. **确认变更类型**：用户要新增/重命名/删除/修改哪个变量，在传播矩阵中找到对应行
+2. **按矩阵变更文件**：修改 schema.ts 后，同步更新矩阵中标注「✓」的其他文件
+3. **更新 EJS 预处理**（如有 EJS 条目引用该变量）：在 EJS 预处理 条目中同步注册/改名/删除 `define()`
+4. **同步创作规划.yaml**：使 `mvu.variables` 段与最新的 schema.ts 一致
+5. **补充世界书条目**（如有）：如果新增了 enum 值或取值范围，检查世界书中是否有对应条目描述其含义
+6. **校验**：
+   - 运行 `node scripts/tavern-cards-forge.mjs validate-mvu {project}` 校验 initvar.yaml
+   - 运行上方同步检查命令校验 Zod.txt
+   - 执行收尾步骤第 4 步的 MVU 一致性检查
