@@ -111,7 +111,7 @@
     "path": "/regex_scripts/状态栏界面",
     "value": {
       "id": "ce6da13c-4e35-4057-8964-3192b7903acc",
-      "findRegex": "<StatusPlaceHolderImpl\\/>",
+      "findRegex": "<StatusPlaceHolderImpl/>",
       "replace_file": "正则/状态栏界面.html",
       "trimStrings": [],
       "placement": [2],
