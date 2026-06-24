@@ -39,7 +39,7 @@
    - Opencode: 放入 `.opencode/skills/` 或 `.agents/skills/` 目录
    - Pi: 放入 `.pi/skills/` 或 `.agents/skills/` 目录
    - 其他 Agent: 放入 Agent 指定的 skill 目录
-3. 配置子代理（用于长文本处理和禁词扫描）：
+3. 配置子代理（用于禁词扫描、长文本大纲提取、叙事式开场白创作）：
    - 将 `tavern-cards/agents/*.md` 文件链接到你的 Coding Agent 的 agents 目录。
      - Claude Code: 
        - Linux/macOS: `~/.claude/agents`
@@ -52,11 +52,22 @@
        - Windows: `%USERPROFILE%\.pi\agent\agents\`
      - 其他 Agent: 创建到 Agent 指定的 agents 目录
 4. 重启或 reload 你的 Coding Agent（不同软件叫法可能不同，如 Claude Code 使用 `/reload-plugins` 命令）
-5. 测试子代理是否配置成功：
-   ```
-   请 check-agent 检查以下内容："她非常善良，心湖泛起涟漪。"
-   ```
-   如果返回禁词检查结果，说明配置成功
+5. 测试安装是否完整（以下三项都应通过）：
+   - **测试 skill 加载**：向你的 Agent 发送以下消息
+     ```
+     请根据 tavern-cards skill 列出你掌握的全部条目创作类型
+     ```
+     如果能列出角色、世界观、时间线等条目类型，说明 skill 加载成功
+   - **测试子代理**：向你的 Agent 发送以下消息
+     ```
+     请 check-agent 检查以下内容："她非常善良，心湖泛起涟漪。"
+     ```
+     如果返回禁词检查结果，说明子代理配置成功
+    - **测试脚本运行**：进入安装后的 skill 目录（如 `.claude/skills/tavern-cards/`），在终端执行
+      ```
+      node scripts/tavern-cards-forge.mjs --help
+      ```
+      如果输出帮助信息，说明 CLI 工具可正常调用
 6. 正式使用 skill 时，建议开一个新会话，避免上下文干扰
 
 当你提到"角色卡"、"世界书"、"SillyTavern"等关键词时，skill 会自动触发

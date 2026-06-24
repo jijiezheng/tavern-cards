@@ -13837,8 +13837,8 @@ var require_jiti = __commonJS({
         }
         const He = /^[/\\]{2}/, ze = /^[/\\](?![/\\])|^[/\\]{2}(?!\.)|^[A-Za-z]:[/\\]/, Je = /^[A-Za-z]:$/, Ye = /.(\.[^./]+|\.)$/, pathe_M_eThtNZ_normalize = function(e3) {
           if (0 === e3.length) return ".";
-          const t3 = (e3 = pathe_M_eThtNZ_normalizeWindowsPath(e3)).match(He), i2 = isAbsolute(e3), n2 = "/" === e3[e3.length - 1];
-          return 0 === (e3 = normalizeString(e3, !i2)).length ? i2 ? "/" : n2 ? "./" : "." : (n2 && (e3 += "/"), Je.test(e3) && (e3 += "/"), t3 ? i2 ? `//${e3}` : `//./${e3}` : i2 && !isAbsolute(e3) ? `/${e3}` : e3);
+          const t3 = (e3 = pathe_M_eThtNZ_normalizeWindowsPath(e3)).match(He), i2 = isAbsolute2(e3), n2 = "/" === e3[e3.length - 1];
+          return 0 === (e3 = normalizeString(e3, !i2)).length ? i2 ? "/" : n2 ? "./" : "." : (n2 && (e3 += "/"), Je.test(e3) && (e3 += "/"), t3 ? i2 ? `//${e3}` : `//./${e3}` : i2 && !isAbsolute2(e3) ? `/${e3}` : e3);
         }, pathe_M_eThtNZ_join = function(...e3) {
           let t3 = "";
           for (const i2 of e3) if (i2) if (t3.length > 0) {
@@ -13854,9 +13854,9 @@ var require_jiti = __commonJS({
           let t3 = "", i2 = false;
           for (let n2 = (e3 = e3.map((e4) => pathe_M_eThtNZ_normalizeWindowsPath(e4))).length - 1; n2 >= -1 && !i2; n2--) {
             const a2 = n2 >= 0 ? e3[n2] : pathe_M_eThtNZ_cwd();
-            a2 && 0 !== a2.length && (t3 = `${a2}/${t3}`, i2 = isAbsolute(a2));
+            a2 && 0 !== a2.length && (t3 = `${a2}/${t3}`, i2 = isAbsolute2(a2));
           }
-          return t3 = normalizeString(t3, !i2), i2 && !isAbsolute(t3) ? `/${t3}` : t3.length > 0 ? t3 : ".";
+          return t3 = normalizeString(t3, !i2), i2 && !isAbsolute2(t3) ? `/${t3}` : t3.length > 0 ? t3 : ".";
         };
         function normalizeString(e3, t3) {
           let i2 = "", n2 = 0, a2 = -1, c2 = 0, l2 = null;
@@ -13887,7 +13887,7 @@ var require_jiti = __commonJS({
           }
           return i2;
         }
-        const isAbsolute = function(e3) {
+        const isAbsolute2 = function(e3) {
           return ze.test(e3);
         }, extname3 = function(e3) {
           if (".." === e3) return "";
@@ -13895,7 +13895,7 @@ var require_jiti = __commonJS({
           return t3 && t3[1] || "";
         }, pathe_M_eThtNZ_dirname = function(e3) {
           const t3 = pathe_M_eThtNZ_normalizeWindowsPath(e3).replace(/\/$/, "").split("/").slice(0, -1);
-          return 1 === t3.length && Je.test(t3[0]) && (t3[0] += "/"), t3.join("/") || (isAbsolute(e3) ? "/" : ".");
+          return 1 === t3.length && Je.test(t3[0]) && (t3[0] += "/"), t3.join("/") || (isAbsolute2(e3) ? "/" : ".");
         }, basename4 = function(e3, t3) {
           const i2 = pathe_M_eThtNZ_normalizeWindowsPath(e3).split("/");
           let n2 = "";
@@ -14371,7 +14371,7 @@ Default "index" lookups for the main are deprecated for ES modules.`, "Deprecati
           }
           if (/(?:node|data|http|https):/.test(e3)) return e3;
           if (st.has(e3)) return "node:" + e3;
-          if (e3.startsWith("file://") && (e3 = fileURLToPath(e3)), isAbsolute(e3)) try {
+          if (e3.startsWith("file://") && (e3 = fileURLToPath(e3)), isAbsolute2(e3)) try {
             if ((0, $e.statSync)(e3).isFile()) return pathToFileURL(e3);
           } catch (e4) {
             if ("ENOENT" !== e4?.code) throw e4;
@@ -14609,7 +14609,7 @@ Default "index" lookups for the main are deprecated for ES modules.`, "Deprecati
         }
         function nativeImportOrRequire(e3, t3, i2) {
           return i2 && e3.nativeImport ? e3.nativeImport((function(e4) {
-            return ni && isAbsolute(e4) ? pathToFileURL(e4) : e4;
+            return ni && isAbsolute2(e4) ? pathToFileURL(e4) : e4;
           })(t3)).then((t4) => jitiInteropDefault(e3, t4)) : jitiInteropDefault(e3, e3.nativeRequire(t3));
         }
         const Ti = "9";
@@ -71647,7 +71647,7 @@ function registerInit(program3, exitOnError2) {
 }
 
 // src/cli/command/validate-mvu.ts
-import { resolve as resolve13, dirname as dirname10 } from "path";
+import { resolve as resolve13, dirname as dirname10, isAbsolute } from "path";
 import { existsSync as existsSync7 } from "fs";
 
 // node_modules/jiti/lib/jiti-static.mjs
@@ -71673,7 +71673,8 @@ function createJiti(id, opts = {}) {
 var _ = __toESM(require_lodash(), 1);
 var yaml2 = __toESM(require_dist(), 1);
 function registerValidateMvu(program3, exitOnError2) {
-  program3.command("validate-mvu").description("Validate initvar.yaml against schema.ts using Zod").argument("<project>", "Project name from .cardrc.json, or any placeholder when --state is provided").option("--state <path>", "Override state.json path and skip project lookup").action(exitOnError2(async (project, opts) => {
+  program3.command("validate-mvu").description("Validate initvar.yaml against schema.ts using Zod").argument("<project>", "Project name from .cardrc.json, or any placeholder when --state is provided").option("--state <path>", "Override state.json path and skip project lookup").option("--initvar <path>", "Path to initvar YAML file; defaults to \u4E16\u754C\u4E66/\u53D8\u91CF/initvar.yaml under project root").action(exitOnError2(async (project, opts) => {
+    const cwd = process.cwd();
     const { statePath } = resolveProject(project, opts);
     const projectDir = dirname10(statePath);
     const state = JSON.parse(readFileText(statePath));
@@ -71681,12 +71682,12 @@ function registerValidateMvu(program3, exitOnError2) {
       throw new Error("\u9879\u76EE\u672A\u542F\u7528 MVU\uFF08tavern-cards-state.json \u4E2D mvu \u4E0D\u4E3A true\uFF09");
     }
     const schemaPath = resolve13(projectDir, "schema.ts");
-    const initvarPath = resolve13(projectDir, "\u4E16\u754C\u4E66/\u53D8\u91CF/initvar.yaml");
+    const initvarPath = opts.initvar ? isAbsolute(opts.initvar) ? opts.initvar : resolve13(cwd, opts.initvar) : resolve13(projectDir, "\u4E16\u754C\u4E66/\u53D8\u91CF/initvar.yaml");
     if (!existsSync7(schemaPath)) {
       throw new Error(`schema.ts \u4E0D\u5B58\u5728: ${schemaPath}`);
     }
     if (!existsSync7(initvarPath)) {
-      throw new Error(`initvar.yaml \u4E0D\u5B58\u5728: ${initvarPath}`);
+      throw new Error(`initvar \u6587\u4EF6\u4E0D\u5B58\u5728: ${initvarPath}`);
     }
     const jiti = createJiti(import.meta.url, { interopDefault: true });
     const globalZ = globalThis;
@@ -71698,7 +71699,7 @@ function registerValidateMvu(program3, exitOnError2) {
     }
     const initvarData = yaml2.parse(readFileText(initvarPath));
     detailedParse(Schema, initvarData);
-    console.log("validate-mvu: initvar.yaml \u6821\u9A8C\u901A\u8FC7");
+    console.log(`validate-mvu: ${initvarPath} \u6821\u9A8C\u901A\u8FC7`);
   }));
 }
 

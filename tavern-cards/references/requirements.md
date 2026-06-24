@@ -25,7 +25,7 @@
 | entries | 全部必填 | 全部必填 |
 | mvu | 只需 structure，可粗略 | structure + variables 完整 |
 | ejs | 只填 entries | generate_before + entries 完整 |
-| first_message | 可只填 format | format + scene + opening_situation |
+| first_messages | 可只填各项 format | 各项 format + scene + opening_situation，需要的项补充 initvar_override |
 
 粗略规划模式下，在 `创作规划.yaml` 中用 `# 待细化` YAML 注释标记需要创作阶段补全的字段。例如：
 

@@ -94,10 +94,14 @@ node scripts/tavern-cards-forge.mjs patch {project} --file assets/mvu-patch.json
 ### 3. 校验 initvar.yaml
 
 ```bash
+# 校验默认 initvar
 node scripts/tavern-cards-forge.mjs validate-mvu {project}
+
+# 校验额外开场白的 initvar_override
+node scripts/tavern-cards-forge.mjs validate-mvu {project} --initvar cards/{Project}/开场白/initvar/1.yaml
 ```
 
-用 schema.ts 中的 Zod Schema 校验 initvar.yaml 内容，确保初始变量符合变量结构定义。
+用 schema.ts 中的 Zod Schema 校验 initvar.yaml 内容，确保初始变量符合变量结构定义。额外开场白使用 `initvar_override` 时，通过 `--initvar` 选项指定具体文件路径。
 
 ### 4. MVU 一致性检查
 
@@ -121,6 +125,7 @@ MVU 和 EJS 编写完成后，检查 MVU 变量系统与已编写世界书条目
 
 - initvar.yaml 的初始值是否与开场白的初始状态一致（如好感度、当前场景等）
 - initvar.yaml 是否通过了 validate-mvu 校验（运行 `node scripts/tavern-cards-forge.mjs validate-mvu {project}`）
+- 使用了 `initvar_override` 的额外开场白，初始值是否与 override 文件一致，并已按 `references/mvu/initvar.md` 校验和嵌入 `<UpdateVariable><initvar>` 块
 - YAML 层级结构是否与 schema.ts 定义一致
 - 无繁体字、日文汉字
 

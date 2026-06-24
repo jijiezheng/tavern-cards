@@ -232,19 +232,23 @@ node scripts/tavern-cards-forge.mjs init {project}
 
 ### validate-mvu
 
-校验 MVU 项目的 `initvar.yaml` 是否符合 `schema.ts` 定义的 Zod schema。
+校验 MVU 项目的 `initvar.yaml` 是否符合 `schema.ts` 定义的 Zod schema。可通过 `--initvar` 指定具体 initvar 文件路径；未指定时默认校验 `世界书/变量/initvar.yaml`。
 
 ```
-node scripts/tavern-cards-forge.mjs validate-mvu <project> [--state <path>]
+node scripts/tavern-cards-forge.mjs validate-mvu <project> [--state <path>] [--initvar <path>]
 ```
 
-前置条件：`mvu: true`、项目根目录有 `schema.ts`（导出 Zod Schema）、`世界书/变量/initvar.yaml` 已编写。用 jiti 加载 `schema.ts`，注入全局 `z`（Zod v4）和 `_`（lodash）。项目自己的 `schema.ts` 应使用全局 `z` / `_`，不依赖本地 `node_modules`。
+前置条件：`mvu: true`、项目根目录有 `schema.ts`（导出 Zod Schema）、待校验的 initvar YAML 文件已编写。用 jiti 加载 `schema.ts`，注入全局 `z`（Zod v4）和 `_`（lodash）。项目自己的 `schema.ts` 应使用全局 `z` / `_`，不依赖本地 `node_modules`。
 
 ```bash
+# 校验默认 initvar
 node scripts/tavern-cards-forge.mjs validate-mvu {project}
+
+# 校验额外开场白的 initvar_override
+node scripts/tavern-cards-forge.mjs validate-mvu {project} --initvar cards/{Project}/开场白/initvar/1.yaml
 ```
 
-成功输出 `validate-mvu: initvar.yaml 校验通过`；失败输出详细错误路径和原因。
+成功输出 `validate-mvu: /path/to/initvar.yaml 校验通过`；失败输出详细错误路径和原因。
 
 ### query
 

@@ -182,11 +182,20 @@ ejs:                             # 可选段落，有 EJS 需求时出现
         - name: 深爱期
           condition: affection >= 60
 
-first_message:                   # 可选段落，角色卡时出现
-  format: 叙事式
-  word_count: 500~700            # 叙事式时的字数范围，大纲式不需要
-  scene: 协会分部门口，雨夜        # 待细化：粗略规划时可省略
-  opening_situation: |           # 待细化：粗略规划时可省略
-    苏云收到协会指令，前往华东分部报到时，在门口遇见<user>。
-    她没想到这次任务的搭档竟是个看起来完全不像修仙者的人。
+first_messages:                  # 可选段落，角色卡时出现；数组顺序对应 state.first_messages
+  - format: 叙事式
+    word_count: 500~700          # 叙事式时的字数范围，大纲式不需要
+    output_path: 开场白/0.txt    # 开场白文件写入路径；叙事式由子代理直接写入，大纲式由主代理保存
+    scene: 协会分部门口，雨夜      # 待细化：粗略规划时可省略
+    opening_situation: |         # 待细化：粗略规划时可省略
+      苏云收到协会指令，前往华东分部报到时，在门口遇见<user>。
+      她没想到这次任务的搭档竟是个看起来完全不像修仙者的人。
+  - format: 叙事式
+    word_count: 300~500
+    output_path: 开场白/1.txt    # 额外开场白路径
+    scene: 一周后的咖啡馆
+    opening_situation: |
+      苏云主动约你在一间安静的咖啡馆见面。
+      她脱掉了协会制服，看起来比平时放松，但眼神里仍带着某种试探。
+    initvar_override: 开场白/initvar/1.yaml  # 可选；该开场白需要不同的初始变量时填写
 ```
