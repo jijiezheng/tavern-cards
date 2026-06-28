@@ -7540,6 +7540,9 @@ function validateStructure(doc, lines, outErrors, outWarnings) {
       const character = doc.characters[i];
       const base = `characters[${i}]`;
       if (!character || typeof character !== "object") continue;
+      if (character.summary && !character.identity && !character.personality && !character.relationship) {
+        outWarnings.push(issue("\u7ED3\u6784", `${base} \u4F7F\u7528\u4E86\u65E7\u683C\u5F0F summary\uFF0C\u5EFA\u8BAE\u62C6\u5206\u4E3A identity/personality/relationship`, lines.get(base) ?? null));
+      }
       if (Array.isArray(character.quotes)) {
         for (let j = 0; j < character.quotes.length; j++) {
           const quote = character.quotes[j];
@@ -7656,15 +7659,26 @@ function checkDoubleQuotes(text, outWarnings) {
   }
 }
 function checkPlaceholders(value, pathName, line, outWarnings) {
-  const patterns = ["\u5F85\u8865\u5145", "\u5F85\u5B9A", "\u7565", "\u67D0"];
-  for (const pattern of patterns) {
+  const multiCharPatterns = ["\u5F85\u8865\u5145", "\u5F85\u5B9A", "\u4ECE\u7565", "\u6682\u7565", "\u7701\u7565"];
+  for (const pattern of multiCharPatterns) {
     if (value.includes(pattern)) {
       outWarnings.push(issue("\u5185\u5BB9", `${pathName} \u5305\u542B\u5360\u4F4D/\u7701\u7565\u8868\u8FF0\u300C${pattern}\u300D`, line));
       return;
     }
   }
-  if (/(^|[，,、；;\s])等($|[，,、；;\s])/.test(value)) {
-    outWarnings.push(issue("\u5185\u5BB9", `${pathName} \u5305\u542B\u7701\u7565\u8868\u8FF0\u300C\u7B49\u300D`, line));
+  const B = "\uFF0C,\u3001\uFF1B;\\s\uFF08(\u2026\u2014";
+  const A = "\uFF0C,\u3001\uFF1B;\\s\uFF09)\u3002.\uFF01!\uFF1F?\u2026\u2014";
+  const singleCharRules = [
+    { char: "\u7565", label: "\u5360\u4F4D/\u7701\u7565\u8868\u8FF0" },
+    { char: "\u67D0", label: "\u5360\u4F4D\u8868\u8FF0" },
+    { char: "\u7B49", label: "\u7701\u7565\u8868\u8FF0" }
+  ];
+  for (const { char, label } of singleCharRules) {
+    const re = new RegExp(`(^|[${B}])${char}($|[${A}])`);
+    if (re.test(value)) {
+      outWarnings.push(issue("\u5185\u5BB9", `${pathName} \u5305\u542B${label}\u300C${char}\u300D`, line));
+      return;
+    }
   }
 }
 function findBestFuzzyMatch(quote, sourceLines) {

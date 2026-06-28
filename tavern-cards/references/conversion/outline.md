@@ -73,7 +73,7 @@ wc -m 源材料.txt
 **流程**：
 1. 通读全文
 2. 为每章撰写 notes（章节概要）
-3. 提取世界观、势力、角色、物品等关键信息
+3. 提取世界观、区域、势力、角色、物品等关键信息
 4. 提取人物塑造、剧情高潮、核心世界观揭示的原文引用
 5. 按 `outline-spec.md` 规范输出大纲
 6. 进入整理深化
@@ -92,7 +92,7 @@ wc -m 源材料.txt
 - 源文件路径
 - 行范围（起始行-结束行）
 - 输出路径
-- 前序大纲片段路径（可选）：子代理可读取了解上下文
+- 前序大纲片段路径（如有）：子代理可读取了解上下文
 
 **子代理职责**：
 - 通读指定范围的内容
@@ -121,10 +121,12 @@ wc -m 源材料.txt
 1. **全局信息汇总**：
    - `summary`：世界观总纲（100-200字）
    - `story_summary`：故事/章节总纲
+   - `style_hints`：从源材料叙事方式推断的文风信息（视角、语言风格、情绪基调）
 
 2. **信息检查**：
-   - 合并重复信息（同一角色/势力/物品在不同章节的描述）
-   - 补充缺失的 summary
+   - 合并重复信息（同一角色/势力/物品/区域在不同章节的描述）
+   - 补充缺失的 summary、identity、personality、relationship
+   - 确保 regions 的 scenes 来自源材料，不自行补充
    - 确保一致性
 
 3. **原文引用整理**：
@@ -160,12 +162,24 @@ chapters:
 # 全局信息
 worldview:
   - ...
+regions:
+  - name: ...
+    scenes: [...]
+    description: ...           # 可选
 factions:
   - name: ...
     summary: ...
+    territory: ...             # 可选
+    key_members: [...]         # 可选
 characters:
   - name: ...
-    summary: ...
+    birth_year: ...            # 可选；或 age
+    gender: ...                # 可选
+    appearance:                # 可选
+      - ...
+    identity: ...
+    personality: ...
+    relationship: ...
     quotes:
       - chapter: ...
         context: ...
@@ -180,6 +194,12 @@ important_chapters:
       - context: ...
         function: ...
         text: ...
+
+# 文风信息（可选）
+style_hints:
+  perspective: ...
+  tone: ...
+  mood: ...
 
 # 关键信息确认结果（整理深化后、生成条目规划前，由关键信息确认阶段补充）
 confirmed_info:

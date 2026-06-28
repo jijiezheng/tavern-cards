@@ -35,13 +35,13 @@ description: "执行材料转化任务，读取源文件指定行范围，按大
 - **源文件路径**：需要读取的文件
 - **行范围**：起始行-结束行（如 L1-L5000）
 - **输出路径**：大纲输出文件路径
-- **前序大纲片段路径**（可选）：已完成的大纲片段，读取了解上下文
+- **前序大纲片段路径**（如有）：已完成的大纲片段，读取了解上下文
 
 ## 执行流程
 
 1. 通读指定范围的内容
 2. 为每章撰写 notes（章节概要）
-3. 提取世界观、势力、角色、物品等关键信息
+3. 提取世界观、区域、势力、角色、物品等关键信息
 4. 提取原文引用：人物塑造、剧情高潮、核心世界观揭示写入 `important_chapters[].quotes[]`，角色代表性原句写入 `characters[].quotes[]`
 5. 收集缺失的具体名称
 6. 输出结果到主代理指定的输出路径
@@ -51,10 +51,11 @@ description: "执行材料转化任务，读取源文件指定行范围，按大
 
 详见 `outline-spec.md` 的「记录规范」章节。核心要求：
 - **chapters.notes**：每章必须有，50-100 字，具体描述主要事件和关键信息
-- **全局信息**：worldview、factions、characters、items、important_chapters
+- **全局信息**：worldview、regions、factions、characters、items、important_chapters、style_hints
 - **important_chapters**：标记关键转折、首次出现、名场面等，记录章节名、原因和可选原文引用
 - **原文引用**：`quotes[].text` 必须逐字来自原文，不得改写、拼接或概括；只收录人物塑造、剧情高潮、核心世界观揭示的关键原句，每章最多 1-2 条
-- **角色引用**：`characters[].quotes[]` 只记录能指导后续角色写作的代表性台词或行为句，必须标注章节和上下文
+- **角色引用**：`characters[].quotes[]` 只记录代表性台词或行为句，标注章节和上下文
+- **各字段详细规则**：characters（identity/personality/relationship/appearance）、regions（scenes/description）、factions（territory/key_members）、style_hints 等详见 `outline-spec.md` 对应小节
 - **原则**：宁多勿少、具体优于抽象、禁止缩写
 
 ## 输出格式
@@ -62,10 +63,10 @@ description: "执行材料转化任务，读取源文件指定行范围，按大
 大纲格式详见 `outline-spec.md` 的「大纲结构」章节。
 
 引用选择标准：
-- `text` 只能是源文件中可逐字搜索到的原文，禁止写成「宣告某事」「体现某性格」这类转述
-- 不把多个不连续句子拼成一条引用
-- 没有足够价值就不填，不为填字段硬找金句
-- 角色代表性引用优先选择能暴露行为边界、关系动态、说话方式的句子
+- `text` 必须逐字来自原文，禁止转述
+- 不拼接不连续句子
+- 无足够价值不填，不为填字段硬找金句
+- 角色代表性引用优先选能判断性格底色、行为边界、关系动态和说话方式的句子
 
 额外输出 `missing_names`（如有缺失名称）：
 
